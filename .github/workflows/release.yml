@@ -36,7 +36,7 @@ jobs:
       - name: Build
         run: |
           BINARY_NAME="rickslow-${{ matrix.goos }}-${{ matrix.goarch }}"
-          go build -o "$BINARY_NAME" -v
+          go build -o "$BINARY_NAME" -v main.go
       - name: Archive Release
         run: |
           tar -czvf "${BINARY_NAME}.${{ matrix.archive_name }}" "$BINARY_NAME"
