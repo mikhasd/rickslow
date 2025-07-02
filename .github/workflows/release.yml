@@ -1,0 +1,52 @@
+name: Build and Release Go Binary
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  release:
+    name: Release Go Binary
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux]
+        goarch: [amd64, arm64, arm]
+        include:
+           - goos: linux
+             goarch: amd64
+             archive_name: tar.gz
+           - goos: linux
+             goarch: arm64
+             archive_name: tar.gz
+           - goos: linux
+             goarch: arm
+             archive_name: tar.gz
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:          
+          go-version: '>=1.21'
+      - name: Get OS and arch info
+        id: vars
+        run: |
+          echo "::set-output name=os::$(go env GOOS)"
+          echo "::set-output name=arch::$(go env GOARCH)"
+      - name: Build
+        run: |
+          BINARY_NAME="rickslow-${{ matrix.goos }}-${{ matrix.goarch }}"
+          go build -o "$BINARY_NAME" -v
+      - name: Archive Release
+        run: |
+          tar -czvf "${BINARY_NAME}.${{ matrix.archive_name }}" "$BINARY_NAME"
+          echo "archive_path=${BINARY_NAME}.${{ matrix.archive_name }}" >> $GITHUB_OUTPUT
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ steps.archive_path.outputs.archive_path }}
+          draft: true
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

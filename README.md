@@ -1,2 +1,2 @@
-# riskslow
+# rickslow
 Slow HTTP responses
