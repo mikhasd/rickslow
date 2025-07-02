@@ -42,7 +42,7 @@ jobs:
           go env GOOS
           go env GOARCH
           go build -o rickslow -v main.go
-          ARCHIVE_FILE=rickslow-${GOOS}-${GOARCH}.tag.gz
+          ARCHIVE_FILE=rickslow-${GOOS}-${GOARCH}.tar.gz
           tar -czvf "${ARCHIVE_FILE}" rickslow
           echo archive_path=${ARCHIVE_FILE} >> $GITHUB_OUTPUT
       - name: Upload Release Asset
@@ -50,7 +50,7 @@ jobs:
         with:
           files: |
             ${{ steps.build.outputs.archive_path }}
-          draft: true
+          draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
