@@ -12,7 +12,7 @@ env:
 jobs:
   release:
     name: Release Go Binary
-    if: github.ref_type == 'tag' && github.repository == 'traefik/traefik'
+    if: github.ref_type == 'tag' && github.repository == 'mikhasd/rickslow'
     runs-on: ubuntu-latest
     strategy:
       matrix:
